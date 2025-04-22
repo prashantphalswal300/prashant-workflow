@@ -164,7 +164,7 @@ class SpotifyTokenExtractor:
 
     def dump_json(self , data : dict[str , str | int | bool]) -> None:
         """Dump the token data to json file."""
-        with open('token.json' , 'w') as file:
+        with open('data.json' , 'w') as file:
             encoded = base64.b64encode(json.dumps(data).encode()).decode()
             json.dump({'encoded' : encoded} , file , indent=4)          
 
