@@ -1,5 +1,3 @@
-## Spotify Anoymous Token Extractor Automation using github actions.
-
 Set these values in repo secrets.
 ```yaml
 PROXY_USERNAME="" (Optional)
