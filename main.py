@@ -10,6 +10,7 @@ import logging
 import os
 import json
 from datetime import datetime , timezone
+import base64
 
 
 console = Console(
@@ -164,7 +165,8 @@ class SpotifyTokenExtractor:
     def dump_json(self , data : dict[str , str | int | bool]) -> None:
         """Dump the token data to json file."""
         with open('token.json' , 'w') as file:
-            json.dump(data , file , indent=4)          
+            encoded = base64.b64encode(json.dumps(data).encode()).decode()
+            json.dump({'encoded' : encoded} , file , indent=4)          
 
     async def main(self):
         self.browser_task = self.loop.create_task(self.execute())
