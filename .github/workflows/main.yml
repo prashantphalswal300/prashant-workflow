@@ -1,7 +1,7 @@
 run-name: Automated Browser Task Workflow
 on:
     schedule:
-      - cron: '*/20 * * * *'  # every 20 minutes
+      - cron: '*/10 * * * *'  # every 20 minutes
     push:  
 jobs:
     main:
