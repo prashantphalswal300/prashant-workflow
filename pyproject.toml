@@ -1,0 +1,12 @@
+[project]
+name = "sptoken-automation"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.28.1",
+    "nodriver>=0.45.1",
+    "python-dotenv>=1.1.0",
+    "rich>=14.0.0",
+]
