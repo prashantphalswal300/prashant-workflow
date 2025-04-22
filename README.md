@@ -1,4 +1,4 @@
-Set these values in repo secrets.
+Set these values in repo secrets..
 ```yaml
 PROXY_USERNAME="" (Optional)
 PROXY_PASSWORD="" (Optional)
