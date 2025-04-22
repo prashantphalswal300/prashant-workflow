@@ -1,0 +1,61 @@
+run-name: Spotify Anoymous Token Extractor
+on:
+    schedule:
+      - cron: '*/20 * * * *'  # every 20 minutes
+    push:  
+jobs:
+    main:
+        permissions:
+          contents: write
+        runs-on : ubuntu-latest
+        env:
+            PROXY_USERNAME : ${{ secrets.PROXY_USERNAME }}
+            PROXY_PASSWORD : ${{ secrets.PROXY_PASSWORD }}
+            PROXY_HOST : ${{ secrets.PROXY_HOST }}
+            NODE_URL : ${{ secrets.NODE_URL }}
+            NODE_PASSWORD : ${{ secrets.NODE_PASSWORD }}
+            DISCORD_WEBHOOK : ${{ secrets.DISCORD_WEBHOOK }}
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+              with:
+                fetch-depth: 0 
+
+            - name: Setup Python
+              uses : actions/setup-python@v2
+              with:
+                python-version: '3.11'
+
+            - name : Install UV 
+              run: pip install uv   
+            
+            - name: Install Chrome dependencies
+              run: |
+                sudo apt-get update
+                sudo apt-get install -y wget gnupg
+                wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+                sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+                sudo apt-get update
+                sudo apt-get install -y google-chrome-stable
+            
+            - name: Run Extractor
+              env:
+                CHROME_BIN: /usr/bin/google-chrome
+              run : xvfb-run --auto-servernum uv run main.py  
+            
+            - name: Sync with remote (stash & rebase)
+              run: |
+                git stash push --include-untracked --quiet
+                git fetch origin ${{ github.ref_name }}
+                git rebase origin/${{ github.ref_name }}
+                git stash pop --quiet || true
+      
+            - name: Auto‑commit updated files
+              uses: stefanzweifel/git-auto-commit-action@v5
+              with:
+                file_pattern: "*.json"
+                commit_message: "chore: update token.json [skip ci]"  
+                commit_user_name: github-actions[bot]
+                commit_user_email: github-actions[bot]@users.noreply.github.com
+          
+    
